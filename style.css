@@ -1,0 +1,950 @@
+/* ==========================================================================
+   SOURAV CHAKRABORTY — Portfolio Stylesheet
+   
+   ARCHITECTURE:
+   1. CSS Custom Properties (change these to re-theme the entire site)
+   2. Reset & Base
+   3. Typography
+   4. Layout — Container & Section
+   5. Hero Section
+   6. About Section
+   7. Bento Grid (shared by Projects & Skills)
+   8. Projects Section
+   9. Skills Section
+  10. Now Section
+  11. Contact / Footer
+  12. Scroll Animations
+  13. Responsive Breakpoints
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. CUSTOM PROPERTIES
+   
+   Edit these variables to change the entire color palette and typography.
+   The accent color is electric blue — swap it for terminal green (#22c55e)
+   or amber (#f59e0b) if you prefer a different vibe.
+   -------------------------------------------------------------------------- */
+:root {
+  /* — Backgrounds — */
+  --bg-primary:    #0a0a0a;          /* near-black canvas                   */
+  --bg-surface:    #111111;          /* card / surface background            */
+  --bg-surface-hover: #1a1a1a;      /* card hover state                     */
+  --bg-elevated:   #161616;          /* elevated surface (nav, footer)       */
+
+  /* — Accent — */
+  --accent:        #2563eb;          /* electric blue — the ONE accent color */
+  --accent-muted:  #1d4ed8;          /* darker shade for borders / subtle    */
+  --accent-glow:   rgba(37, 99, 235, 0.15); /* glow / tint overlays         */
+
+  /* — Text — */
+  --text-primary:  #e5e5e5;          /* main body text                      */
+  --text-secondary:#a3a3a3;          /* muted / supporting text              */
+  --text-tertiary: #525252;          /* very muted (labels, dividers)        */
+
+  /* — Borders — */
+  --border:        #1e1e1e;          /* default border                      */
+  --border-hover:  #2a2a2a;         /* border on hover                      */
+
+  /* — Typography — */
+  --font-heading:  'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-body:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* — Sizing — */
+  --container-max: 1120px;
+  --section-gap:   6rem;
+  --border-radius: 12px;
+
+  /* — Transitions — */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --transition:    0.3s var(--ease-out);
+}
+
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;             /* tells the browser we're dark-mode       */
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover { color: #60a5fa; }
+
+img { max-width: 100%; display: block; }
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Section titles — the small label above each section */
+.section-label {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* The "//  " prefix that makes labels look like code comments */
+.section-label::before {
+  content: '//';
+  color: var(--text-tertiary);
+}
+
+
+/* --------------------------------------------------------------------------
+   4. LAYOUT — Container & Section
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+section {
+  padding: var(--section-gap) 0;
+}
+
+/* Thin horizontal rule between sections */
+.section-divider {
+  border: none;
+  height: 1px;
+  background: var(--border);
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+
+/* --------------------------------------------------------------------------
+   5. NAVIGATION
+   -------------------------------------------------------------------------- */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1rem 0;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.nav.scrolled {
+  border-bottom-color: var(--border);
+}
+
+.nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.nav-logo span {
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+.nav-links a:hover { color: var(--text-primary); }
+
+/* Mobile hamburger */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text-primary);
+  margin: 5px 0;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+/* Hamburger → X animation */
+.nav-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* --------------------------------------------------------------------------
+   6. HERO SECTION
+   -------------------------------------------------------------------------- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 5rem;          /* offset for fixed nav */
+}
+
+.hero-content {
+  max-width: 720px;
+}
+
+.hero-name {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+/* The typing effect container */
+.hero-tagline {
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 2rem;
+}
+
+/* Blinking cursor after the typed text */
+.hero-tagline .cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.3em;
+  background: var(--accent);
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* Hero link row (GitHub, LinkedIn, email, resume) */
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.hero-links a,
+.hero-links .btn {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  background: transparent;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.hero-links a:hover,
+.hero-links .btn:hover {
+  border-color: var(--accent-muted);
+  color: var(--text-primary);
+  background: var(--accent-glow);
+}
+
+/* Primary CTA (resume download) */
+.hero-links .btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.hero-links .btn-primary:hover {
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+}
+
+/* Status indicator dot — "open to opportunities" */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  display: inline-block;
+  animation: pulse-dot 2s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+}
+
+.hero-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 1.5rem;
+  font-family: var(--font-heading);
+}
+
+
+/* --------------------------------------------------------------------------
+   7. ABOUT SECTION
+   -------------------------------------------------------------------------- */
+.about-text {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 680px;
+  line-height: 1.85;
+}
+
+.about-text strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+
+/* --------------------------------------------------------------------------
+   8. BENTO GRID — shared layout for Projects & Skills
+   
+   A "bento grid" is a mosaic/dashboard-style layout where cards have
+   varying column/row spans. We use CSS Grid with auto-fill and explicit
+   span rules.
+   -------------------------------------------------------------------------- */
+.bento-grid {
+  display: grid;
+  gap: 1rem;
+  /* Default: single column on mobile, expands via media queries */
+  grid-template-columns: 1fr;
+}
+
+.bento-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 1.75rem;
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-surface-hover);
+  transform: translateY(-2px);
+}
+
+/* Subtle accent gradient on top edge of card */
+.bento-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.bento-card:hover::before { opacity: 1; }
+
+
+/* --------------------------------------------------------------------------
+   9. PROJECTS SECTION
+   -------------------------------------------------------------------------- */
+.project-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.project-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.project-date {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.project-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+}
+
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.project-stack span {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.project-links {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.project-links a {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color var(--transition);
+}
+.project-links a:hover { color: var(--accent); }
+
+/* Arrow icon after links */
+.project-links a::after {
+  content: '↗';
+  font-size: 0.85em;
+  transition: transform var(--transition);
+}
+.project-links a:hover::after {
+  transform: translate(2px, -2px);
+}
+
+/* Key metric badge */
+.project-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: #22c55e;
+  margin-bottom: 1rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   10. SKILLS SECTION — terminal / config-file aesthetic
+   
+   Renders skills like a YAML/TOML config file in a code block.
+   -------------------------------------------------------------------------- */
+.skills-terminal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Terminal title bar */
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot:nth-child(1) { background: #ef4444; }
+.terminal-dot:nth-child(2) { background: #f59e0b; }
+.terminal-dot:nth-child(3) { background: #22c55e; }
+
+.terminal-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-left: 0.5rem;
+}
+
+/* Terminal body — the "code" content */
+.terminal-body {
+  padding: 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+
+.config-key {
+  color: var(--accent);
+}
+
+.config-value {
+  color: var(--text-secondary);
+}
+
+.config-comment {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.config-section {
+  margin-bottom: 1rem;
+}
+
+.config-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Bento skills grid — alternative to terminal for individual skill cards */
+.skills-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.skill-category-title {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.skill-tags span {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+}
+
+.skill-tags span:hover {
+  border-color: var(--accent-muted);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
+
+/* --------------------------------------------------------------------------
+   11. NOW SECTION
+   -------------------------------------------------------------------------- */
+.now-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 1.75rem;
+  max-width: 680px;
+  position: relative;
+}
+
+.now-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.now-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+
+/* --------------------------------------------------------------------------
+   12. EXPERIENCE SECTION
+   -------------------------------------------------------------------------- */
+.experience-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 680px;
+}
+
+.experience-item {
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--border);
+  transition: border-color var(--transition);
+}
+
+.experience-item:hover {
+  border-left-color: var(--accent);
+}
+
+.experience-role {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.experience-org {
+  font-size: 0.85rem;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
+
+.experience-date {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+.experience-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+
+/* --------------------------------------------------------------------------
+   13. CONTACT / FOOTER
+   -------------------------------------------------------------------------- */
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.contact-links a {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition);
+}
+
+.contact-links a:hover {
+  border-color: var(--accent-muted);
+  color: var(--text-primary);
+  background: var(--accent-glow);
+}
+
+.footer {
+  padding: 3rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.footer-text {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+
+/* --------------------------------------------------------------------------
+   14. SCROLL ANIMATIONS
+   
+   HOW IT WORKS:
+   Elements start invisible and shifted down. When the Intersection Observer
+   (in script.js) detects them entering the viewport, it adds the
+   "in-view" class, which triggers the CSS transition to full opacity
+   and original position. This is far lighter than a JS animation library.
+   -------------------------------------------------------------------------- */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.animate-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered delay for child elements — used in bento grids */
+.animate-on-scroll.delay-1 { transition-delay: 0.1s; }
+.animate-on-scroll.delay-2 { transition-delay: 0.2s; }
+.animate-on-scroll.delay-3 { transition-delay: 0.3s; }
+.animate-on-scroll.delay-4 { transition-delay: 0.4s; }
+
+
+/* --------------------------------------------------------------------------
+   15. MAGNETIC HOVER EFFECT — 3D tilt on project cards
+
+   The JS calculates cursor position relative to card center and applies
+   rotateX/rotateY transforms via inline style. The CSS below provides
+   the perspective container and smooth reset transition on mouseleave.
+   will-change: transform tells the browser to promote this to its own
+   compositor layer for smooth GPU-accelerated animation.
+   -------------------------------------------------------------------------- */
+.project-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+  /* Smooth return to neutral when the cursor leaves */
+  transition:
+    transform 0.4s var(--ease-out),
+    border-color var(--transition),
+    background var(--transition);
+}
+
+/* While hovering, JS sets the inline transform — this removes the
+   transition so the tilt tracks the cursor in real time without lag */
+.project-card.is-tilting {
+  transition: border-color var(--transition), background var(--transition);
+}
+
+
+/* --------------------------------------------------------------------------
+   16. COPY-TO-CLIPBOARD TOAST
+
+   A small "Copied!" badge that appears inline next to the email link.
+   It fades in, holds, then fades out after ~1.5s via the .show class
+   which is toggled by JS.
+   -------------------------------------------------------------------------- */
+.email-copy {
+  position: relative;
+  cursor: pointer;
+}
+
+.copy-toast {
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+
+.copy-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* --------------------------------------------------------------------------
+   17. GITHUB STATS — grid layout for the embeddable stat images
+
+   Two stat cards sit side by side on desktop, stack on mobile.
+   Transparent background so the card blends with the section.
+   -------------------------------------------------------------------------- */
+.github-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.github-stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.github-stat-card:hover {
+  border-color: var(--border-hover);
+}
+
+/* Make the stat images responsive — fill the card without overflow */
+.github-stat-card img {
+  width: 100%;
+  height: auto;
+  max-width: 495px;
+  /* If the image fails to load, collapse gracefully */
+  min-height: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   18. RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+
+/* Tablet — 640px+ */
+@media (min-width: 640px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .github-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop — 768px+ */
+@media (min-width: 768px) {
+  :root {
+    --section-gap: 7rem;
+  }
+
+  .hero-name {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+  }
+}
+
+/* Large desktop — 1024px+ */
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile nav — below 640px */
+@media (max-width: 639px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 280px;
+    height: 100vh;
+    background: var(--bg-elevated);
+    border-left: 1px solid var(--border);
+    flex-direction: column;
+    padding: 5rem 2rem 2rem;
+    gap: 1.5rem;
+    transition: right var(--transition);
+  }
+
+  .nav-links.open {
+    right: 0;
+  }
+
+  /* Overlay behind mobile menu */
+  .nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  .nav-overlay.visible {
+    display: block;
+  }
+
+  .hero-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
