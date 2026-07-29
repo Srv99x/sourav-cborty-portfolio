@@ -26,6 +26,31 @@
    or amber (#f59e0b) if you prefer a different vibe.
    -------------------------------------------------------------------------- */
 :root {
+  /* — Typography — */
+  --font-heading:  'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-body:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* — Sizing — */
+  --container-max: 1120px;
+  --section-gap:   6rem;
+  --border-radius: 12px;
+
+  /* — Transitions — */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --transition:    0.3s var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   THEME TRANSITIONS
+   -------------------------------------------------------------------------- */
+body, .nav, .bento-card, .github-stat-card, .nav-toggle span {
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), fill var(--transition), stroke var(--transition);
+}
+
+/* --------------------------------------------------------------------------
+   DARK THEME (Default)
+   -------------------------------------------------------------------------- */
+:root, [data-theme="dark"] {
   /* — Backgrounds — */
   --bg-primary:    #0a0a0a;          /* near-black canvas                   */
   --bg-surface:    #111111;          /* card / surface background            */
@@ -46,18 +71,36 @@
   --border:        #1e1e1e;          /* default border                      */
   --border-hover:  #2a2a2a;         /* border on hover                      */
 
-  /* — Typography — */
-  --font-heading:  'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-  --font-body:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* — Specifics — */
+  --nav-bg:        rgba(10, 10, 10, 0.8);
+}
 
-  /* — Sizing — */
-  --container-max: 1120px;
-  --section-gap:   6rem;
-  --border-radius: 12px;
+/* --------------------------------------------------------------------------
+   LIGHT THEME
+   -------------------------------------------------------------------------- */
+[data-theme="light"] {
+  /* — Backgrounds — */
+  --bg-primary:    #fafafa;          /* off-white canvas                   */
+  --bg-surface:    #ffffff;          /* card / surface background            */
+  --bg-surface-hover: #f4f4f5;      /* card hover state                     */
+  --bg-elevated:   #ffffff;          /* elevated surface (nav, footer)       */
 
-  /* — Transitions — */
-  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
-  --transition:    0.3s var(--ease-out);
+  /* — Accent (same as dark for brand consistency) — */
+  --accent:        #2563eb;          
+  --accent-muted:  #1d4ed8;          
+  --accent-glow:   rgba(37, 99, 235, 0.15); 
+
+  /* — Text — */
+  --text-primary:  #171717;          /* very dark gray for main text         */
+  --text-secondary:#525252;          /* mid-gray for secondary text          */
+  --text-tertiary: #a3a3a3;          /* light gray for labels                */
+
+  /* — Borders — */
+  --border:        #e5e5e5;          /* light border                         */
+  --border-hover:  #d4d4d4;         /* darker light border                  */
+
+  /* — Specifics — */
+  --nav-bg:        rgba(255, 255, 255, 0.8);
 }
 
 
@@ -73,7 +116,6 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  color-scheme: dark;             /* tells the browser we're dark-mode       */
 }
 
 body {
@@ -85,6 +127,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 a {
@@ -167,7 +210,7 @@ section {
   right: 0;
   z-index: 100;
   padding: 1rem 0;
-  background: rgba(10, 10, 10, 0.8);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
@@ -207,6 +250,20 @@ section {
   transition: color var(--transition);
 }
 .nav-links a:hover { color: var(--text-primary); }
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: color var(--transition);
+}
+.theme-toggle:hover {
+  color: var(--text-primary);
+}
 
 /* Mobile hamburger */
 .nav-toggle {
@@ -842,12 +899,16 @@ section {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--border-radius);
-  padding: 1rem;
+  padding: 1.5rem;
   display: flex;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
-  transition: border-color var(--transition);
+  align-items: center;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+[data-theme="light"] .github-stat-card {
+  background: #111111; /* Keep dark in light mode */
+  border-color: #1e1e1e;
 }
 
 .github-stat-card:hover {

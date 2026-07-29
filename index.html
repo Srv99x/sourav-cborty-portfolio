@@ -45,6 +45,17 @@
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
+  <!-- Theme Initialization Script (prevents FOUC) -->
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (systemDark ? 'dark' : 'light');
+    // For this portfolio, we default to dark if nothing is saved or system is light?
+    // User said: "default to "dark" if none saved or if user's system preference is dark"
+    // So if no saved theme, just default to dark.
+    document.documentElement.setAttribute('data-theme', savedTheme || 'dark');
+  </script>
+
   <!-- Favicon — circular avatar image used as browser tab icon -->
   <link rel="icon" type="image/jpeg" href="assets/favicon.jpeg" />
 </head>
@@ -73,6 +84,11 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <!-- Icon is injected by JS -->
+          </button>
+        </li>
       </ul>
     </div>
   </nav>
