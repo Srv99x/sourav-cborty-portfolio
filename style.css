@@ -251,6 +251,12 @@ section {
 }
 .nav-links a:hover { color: var(--text-primary); }
 
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .theme-toggle {
   background: none;
   border: none;
