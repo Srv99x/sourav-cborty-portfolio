@@ -332,11 +332,62 @@ function initThemeToggle() {
 
   updateThemeIcon(currentTheme, toggleBtn);
 
-  toggleBtn.addEventListener('click', () => {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    localStorage.setItem('theme', currentTheme);
-    updateThemeIcon(currentTheme, toggleBtn);
+  toggleBtn.addEventListener('click', (e) => {
+    const isDark = currentTheme === 'dark';
+    const nextTheme = isDark ? 'light' : 'dark';
+
+    // Fallback for browsers without View Transitions API
+    if (!document.startViewTransition) {
+      currentTheme = nextTheme;
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      localStorage.setItem('theme', currentTheme);
+      updateThemeIcon(currentTheme, toggleBtn);
+      return;
+    }
+
+    // Get click position for the ripple origin
+    const x = e.clientX;
+    const y = e.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+
+    // Disable CSS transitions temporarily so the view transition snapshot is clean
+    const style = document.createElement('style');
+    style.innerHTML = '*, *::before, *::after { transition: none !important; }';
+    document.head.appendChild(style);
+
+    const transition = document.startViewTransition(() => {
+      currentTheme = nextTheme;
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      localStorage.setItem('theme', currentTheme);
+      updateThemeIcon(currentTheme, toggleBtn);
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+
+      document.documentElement.animate(
+        {
+          clipPath: isDark ? clipPath : [...clipPath].reverse()
+        },
+        {
+          duration: 500,
+          easing: 'ease-in-out',
+          pseudoElement: isDark
+            ? '::view-transition-new(root)'
+            : '::view-transition-old(root)'
+        }
+      );
+    });
+
+    transition.finished.then(() => {
+      document.head.removeChild(style);
+    });
   });
 }
 
