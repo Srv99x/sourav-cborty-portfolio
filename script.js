@@ -333,8 +333,7 @@ function initThemeToggle() {
   updateThemeIcon(currentTheme, toggleBtn);
 
   toggleBtn.addEventListener('click', (e) => {
-    const isDark = currentTheme === 'dark';
-    const nextTheme = isDark ? 'light' : 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
     // Fallback for browsers without View Transitions API
     if (!document.startViewTransition) {
@@ -345,15 +344,26 @@ function initThemeToggle() {
       return;
     }
 
-    // Get click position for the ripple origin
-    const x = e.clientX;
-    const y = e.clientY;
+    /*
+     * Get ripple origin — use click coordinates if available,
+     * otherwise fall back to the button's center (handles mobile
+     * touch events where clientX/Y can be 0).
+     */
+    let x = e.clientX;
+    let y = e.clientY;
+    if (!x && !y) {
+      const rect = toggleBtn.getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    }
+
+    // Radius must reach the farthest corner of the viewport
     const endRadius = Math.hypot(
       Math.max(x, innerWidth - x),
       Math.max(y, innerHeight - y)
     );
 
-    // Disable CSS transitions temporarily so the view transition snapshot is clean
+    // Disable CSS transitions temporarily so the snapshot is clean
     const style = document.createElement('style');
     style.innerHTML = '*, *::before, *::after { transition: none !important; }';
     document.head.appendChild(style);
@@ -366,21 +376,23 @@ function initThemeToggle() {
     });
 
     transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`
-      ];
-
+      /*
+       * Always animate the NEW view expanding outward as a circle
+       * from the click point. This works for both directions because
+       * the new snapshot (whatever theme we just switched TO) grows
+       * from 0 → full radius, covering the old snapshot underneath.
+       */
       document.documentElement.animate(
         {
-          clipPath: isDark ? clipPath : [...clipPath].reverse()
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`
+          ]
         },
         {
           duration: 500,
           easing: 'ease-in-out',
-          pseudoElement: isDark
-            ? '::view-transition-new(root)'
-            : '::view-transition-old(root)'
+          pseudoElement: '::view-transition-new(root)'
         }
       );
     });

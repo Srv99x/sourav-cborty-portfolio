@@ -1020,6 +1020,10 @@ section {
 
 /* --------------------------------------------------------------------------
    VIEW TRANSITIONS (Theme Toggle Ripple)
+
+   The JS always animates ::view-transition-new(root) expanding as a circle
+   from the click point. We disable the default cross-fade animation and
+   ensure the new snapshot sits on top of the old one.
    -------------------------------------------------------------------------- */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -1027,18 +1031,9 @@ section {
   mix-blend-mode: normal;
 }
 
-/* When switching to light mode, new view is on top */
 ::view-transition-new(root) {
   z-index: 2;
 }
 ::view-transition-old(root) {
-  z-index: 1;
-}
-
-/* When switching to dark mode, old view (light) is kept on top so it can shrink */
-[data-theme="dark"]::view-transition-old(root) {
-  z-index: 2;
-}
-[data-theme="dark"]::view-transition-new(root) {
   z-index: 1;
 }
